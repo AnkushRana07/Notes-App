@@ -3,6 +3,7 @@ import { FaTrash } from "react-icons/fa";
 import { api } from "./api";
 
 export default function Dashboard({ onSignOut, user }) {
+  console.log('Dashboard received user:', user); // Debug log
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -34,8 +35,8 @@ export default function Dashboard({ onSignOut, user }) {
   const deleteNote = async (id) => {
     try {
       await api(`/api/notes/${id}`, { method: 'DELETE' });
-      setNotes((prev) => prev.filter((n) => n.id !== id));
-      if (selectedNote && selectedNote.id === id) {
+      setNotes((prev) => prev.filter((n) => n._id !== id)); // Use _id instead of id
+      if (selectedNote && selectedNote._id === id) { // Use _id instead of id
         setSelectedNote(null);
       }
     } catch (e) {
@@ -96,6 +97,7 @@ export default function Dashboard({ onSignOut, user }) {
         <div className="p-4 border-b bg-gray-50">
           <h2 className="text-lg font-semibold">Welcome{user?.name ? `, ${user.name}` : ''}!</h2>
           <p className="text-gray-600 text-sm mt-1">Email: {user?.email || '—'}</p>
+         
         </div>
 
         {/* Content Area */}
@@ -161,9 +163,6 @@ export default function Dashboard({ onSignOut, user }) {
         </div>
       </div>
 
-      {/* Desktop Background Area */}
-    
-
       {/* Note Detail Modal */}
       {selectedNote && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -195,6 +194,16 @@ export default function Dashboard({ onSignOut, user }) {
           </div>
         </div>
       )}
+
+      {/* Right Side Image - Desktop Only */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 items-center justify-center relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src="/image/desktopimage.jpg" 
+          alt="Abstract blue waves background"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+      </div>
     </div>
   );
 }

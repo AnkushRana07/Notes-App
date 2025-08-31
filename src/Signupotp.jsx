@@ -2,7 +2,7 @@ import { Calendar, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api, saveAuth } from "./api";
 
-export default function Signupotp({ onSwitch, userData, onVerified }) {
+export default function Signupotp({ onSignIn, userData, onBack }) {
   const [showOtp, setShowOtp] = useState(false);
   const [formData, setFormData] = useState({
     name: userData?.name || "",
@@ -23,8 +23,7 @@ export default function Signupotp({ onSwitch, userData, onVerified }) {
     })
       .then(({ token, user }) => {
         saveAuth({ token, user });
-        if (onVerified) onVerified(user);
-        else onSwitch();
+        onSignIn({ user }); // Pass the correct format
       })
       .catch((err) => setServerError(err.message || 'OTP verification failed'))
       .finally(() => setSubmitting(false));
@@ -59,9 +58,9 @@ export default function Signupotp({ onSwitch, userData, onVerified }) {
         </div>
 
         {/* Heading */}
-        <h2 className="text-3xl font-bold text-center mt-4 px-8">Sign up</h2>
+        <h2 className="text-3xl font-bold text-center mt-4 px-8">Verify OTP</h2>
         <p className="text-gray-500 text-center mt-1 text-sm sm:text-base px-8">
-          Sign up to enjoy the feature of HD
+          Enter the OTP sent to your email
         </p>
 
         {/* Form */}
@@ -139,16 +138,24 @@ export default function Signupotp({ onSwitch, userData, onVerified }) {
 
         {/* Footer */}
         <p className="text-center text-sm sm:text-base text-gray-600 mt-5 px-8">
-          Already have an account?{" "}
           <button
             type="button"
             className="text-blue-500 font-medium hover:underline"
-            onClick={onSwitch}
+            onClick={onBack}
           >
-            Sign in
+            ← Back to Sign Up
           </button>
         </p>
       </div>
+       {/* Right Side Image - Desktop Only */}
+       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 items-center justify-center relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src="/image/desktopimage.jpg" 
+          alt="Abstract blue waves background"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        </div>
     </div>
   );
 }

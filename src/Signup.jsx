@@ -2,7 +2,7 @@ import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { api } from "./api";
 
-export default function Signup({ onOtp, onSwitch }) {
+export default function Signup({ onNext, onSignIn }) { // Changed from onBack to onSignIn
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -42,14 +42,10 @@ export default function Signup({ onOtp, onSwitch }) {
     })
       .then((data) => {
         if (data && data.previewUrl) {
-          // Dev-only: Ethereal preview URL to view the email
-          // You can open it in a new tab for convenience
           try { window.open(data.previewUrl, '_blank'); } catch {}
-          // Also log to console in case the popup is blocked
-          // eslint-disable-next-line no-console
           console.log('OTP preview URL:', data.previewUrl);
         }
-        onOtp(formData);
+        onNext(formData); // Pass userData to next step
       })
       .catch((err) => setServerError(err.message || 'Failed to send OTP'))
       .finally(() => setSubmitting(false));
@@ -167,11 +163,23 @@ export default function Signup({ onOtp, onSwitch }) {
           <button
             type="button"
             className="text-blue-500 font-medium hover:underline"
-            onClick={onSwitch}
+            onClick={onSignIn}
           >
             Sign in
           </button>
         </p>
+      </div>
+
+      {/* Right Side Image - Desktop Only */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 items-center justify-center relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src="/image/desktopimage.jpg" 
+          alt="Abstract blue waves background"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        
+        
       </div>
     </div>
   );

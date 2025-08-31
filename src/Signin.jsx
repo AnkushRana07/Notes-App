@@ -2,7 +2,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api, saveAuth } from "./api";
 
-export default function Signin({ onSwitch, onSignIn }) {
+export default function Signin({ onSwitch, onSignIn, onSignUp }) {
   const [showOtp, setShowOtp] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -32,9 +32,9 @@ export default function Signin({ onSwitch, onSignIn }) {
         setInfoMsg('OTP sent to your email');
         if (data && data.previewUrl) {
           try { window.open(data.previewUrl, '_blank'); } catch {}
-          // eslint-disable-next-line no-console
           console.log('OTP preview URL:', data.previewUrl);
         }
+        setShowOtp(true);
       })
       .catch((err) => setServerError(err.message || 'Failed to send OTP'))
       .finally(() => setRequesting(false));
@@ -58,7 +58,7 @@ export default function Signin({ onSwitch, onSignIn }) {
     })
       .then(({ token, user }) => {
         saveAuth({ token, user });
-        onSignIn(user);
+        onSignIn({ user });
       })
       .catch((err) => setServerError(err.message || 'Invalid OTP'))
       .finally(() => setVerifying(false));
@@ -73,8 +73,6 @@ export default function Signin({ onSwitch, onSignIn }) {
       setLoading(true);
       
       try {
-        // For now, use a simple approach that works without Google Cloud Console
-        // This simulates Google sign-in for development
         const email = prompt('Enter your Google email (for testing):');
         const name = prompt('Enter your name (for testing):');
         
@@ -83,7 +81,6 @@ export default function Signin({ onSwitch, onSignIn }) {
           return;
         }
 
-        // Call our backend with the email/name
         const res = await fetch('/api/auth/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -97,7 +94,7 @@ export default function Signin({ onSwitch, onSignIn }) {
         if (!res.ok) throw new Error(data.message || 'Google sign-in failed');
         
         saveAuth({ token: data.token, user: data.user });
-        onSignIn(data.user);
+        onSignIn({ user: data.user });
       } catch (e) {
         setError(e.message || 'Google sign-in failed');
         console.error('Google sign-in error:', e);
@@ -232,11 +229,23 @@ export default function Signin({ onSwitch, onSignIn }) {
           <button
             type="button"
             className="text-blue-500 font-medium hover:underline"
-            onClick={onSwitch}
+            onClick={onSignUp}
           >
             Sign up
           </button>
         </p>
+      </div>
+
+      {/* Right Side Image - Desktop Only */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 items-center justify-center relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src="/image/desktopimage.jpg" 
+          alt="Abstract blue waves background"
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+        
+       
       </div>
     </div>
   );
