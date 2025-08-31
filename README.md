@@ -106,7 +106,7 @@ server/
 - **Notes**: Title, content, who created them
 - **OTPs**: Temporary codes for email verification
 
-## 🛠️ How to Get It Running
+## How to Get It Running
 
 ### What You Need
 - Node.js (version 14 or higher)
